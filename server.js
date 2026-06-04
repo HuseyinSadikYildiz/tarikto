@@ -6,12 +6,16 @@ const { WebSocketServer } = require('ws');
 // PORT Configuration
 const PORT = 8080;
 
-// HTTP static file server
 const server = http.createServer((req, res) => {
-  let filePath = req.url === '/' ? './index.html' : '.' + req.url;
-  // Prevent directory traversal
-  filePath = path.normalize(filePath);
-  if (!filePath.startsWith('.')) {
+  // Strip query parameters
+  const pathname = req.url.split('?')[0];
+  let filePath = pathname === '/' ? './index.html' : '.' + pathname;
+  
+  // Prevent directory traversal securely
+  const resolvedPath = path.resolve(filePath);
+  const resolvedDir = path.resolve('.');
+  
+  if (!resolvedPath.startsWith(resolvedDir)) {
     res.writeHead(403);
     res.end('Forbidden');
     return;
