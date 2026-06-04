@@ -94,7 +94,7 @@ class GameController {
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const protocol = isLocal ? 'ws://' : 'wss://';
     const host = isLocal ? 'localhost:8080' : window.location.host; // fallback to host if production, user says wss:// plus window.location.hostname, but host retains port if any
-    const wsUrl = `${protocol}${isLocal ? 'localhost:8080' : tarikto-production.up.railway.app}`;
+const wsUrl = `${protocol}${isLocal ? 'localhost:8080' : 'tarikto-production.up.railway.app'}`;
 
     this.ws = new WebSocket(wsUrl);
 
