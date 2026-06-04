@@ -169,19 +169,20 @@ class GameController {
 
       case 'game_start':
         this.mapId = payload.mapId;
+        // Switch to game screen first, then show BAŞLA! overlay (which lives inside screen-game)
         showScreen('screen-game');
         this.setupKeyboardListeners();
         this.startGameRenderLoop();
-
-        // Show BAŞLA! for 1 second, then hide the overlay
-        const overlay = document.getElementById('countdown-overlay');
-        const numEl = document.getElementById('countdown-number');
-        if (overlay && numEl) {
-          overlay.classList.remove('hidden');
-          numEl.innerText = 'BAŞLA!';
-          setTimeout(() => {
-            overlay.classList.add('hidden');
-          }, 1000);
+        {
+          const overlay = document.getElementById('countdown-overlay');
+          const numEl = document.getElementById('countdown-number');
+          if (overlay && numEl) {
+            numEl.innerText = 'BAŞLA!';
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+              overlay.classList.add('hidden');
+            }, 1000);
+          }
         }
         break;
 
@@ -266,13 +267,9 @@ class GameController {
       oppCard.style.display = 'none';
     }
 
-    // Countdown handling
-    const countdownOverlay = document.getElementById('countdown-overlay');
+    // Countdown: just update the visible number in the selection screen label (overlay is inside screen-game)
     if (payload.status === 'countdown') {
-      countdownOverlay.classList.remove('hidden');
       document.getElementById('countdown-number').innerText = payload.countdown;
-    } else {
-      countdownOverlay.classList.add('hidden');
     }
   }
 
