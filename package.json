@@ -1,0 +1,12 @@
+{
+  "name": "platform-battle",
+  "version": "1.0.0",
+  "description": "Multiplayer 2D platform battle game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.0.0"
+  }
+}

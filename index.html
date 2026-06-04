@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platform Battle</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Screen 1: Login Screen -->
+  <div id="screen-login" class="screen active">
+    <div class="card glass">
+      <h1 class="logo">Platform Battle</h1>
+      <div class="input-group">
+        <label for="input-name">İsmin ne?</label>
+        <input type="text" id="input-name" placeholder="Kullanıcı adı girin..." autocomplete="off" maxlength="15">
+      </div>
+      <button id="btn-login" class="btn btn-primary">Gir</button>
+    </div>
+  </div>
+
+  <!-- Screen 2: Lobby Screen -->
+  <div id="screen-lobby" class="screen">
+    <div class="lobby-layout">
+      <!-- Profile Card Center -->
+      <div class="card profile-card glass">
+        <div class="avatar" id="lobby-avatar">?</div>
+        <h2 id="lobby-username" class="username">Oyuncu</h2>
+        
+        <div class="join-group">
+          <input type="text" id="input-room-code" placeholder="6 Haneli Oda Kodu" autocomplete="off" maxlength="6">
+          <button id="btn-join-room" class="btn btn-secondary">Katıl</button>
+        </div>
+        <div id="lobby-error" class="error-msg"></div>
+      </div>
+
+      <!-- Create Room Button Right -->
+      <button id="btn-create-room" class="btn-circle-plus" title="Oda Oluştur">
+        <span>+</span>
+      </button>
+    </div>
+
+    <!-- Room Code Modal -->
+    <div id="modal-room-code" class="modal-overlay">
+      <div class="modal card glass">
+        <h3>Oda Oluşturuldu</h3>
+        <p class="modal-desc">Arkadaşınızla paylaşmak için kodu kopyalayın. Rakip bağlandığında oyun kurulumuna geçilecektir.</p>
+        <div class="code-display-group">
+          <span id="display-room-code">000000</span>
+          <button id="btn-copy-code" class="btn btn-small">Kopyala</button>
+        </div>
+        <div class="loader-group">
+          <div class="spinner"></div>
+          <span>Rakip bekleniyor...</span>
+        </div>
+        <button id="btn-cancel-room" class="btn btn-text">İptal Et</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3: Character Selection & Mod Settings -->
+  <div id="screen-selection" class="screen">
+    <div class="selection-container">
+      <!-- Left side: Character selection grid -->
+      <div class="card selection-left glass">
+        <h3>Karakterini Seç</h3>
+        <div class="character-grid" id="char-grid">
+          <!-- 5 Characters generated dynamically -->
+        </div>
+        <div class="ready-status-row">
+          <div class="player-ready-card" id="ready-card-self">
+            <span class="player-name">Sen</span>
+            <span class="status-badge waiting">Seçim Yapıyor...</span>
+          </div>
+          <div class="player-ready-card" id="ready-card-opp">
+            <span class="player-name">Rakip</span>
+            <span class="status-badge waiting">Seçim Yapıyor...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side: Settings Panel -->
+      <div class="card selection-right glass">
+        <h3>Oda Ayarları</h3>
+        
+        <div class="setting-item">
+          <label>Silah Modu</label>
+          <div class="toggle-switch-wrapper">
+            <input type="checkbox" id="toggle-weapon-mode" class="toggle-switch-checkbox">
+            <label for="toggle-weapon-mode" class="toggle-switch-label">
+              <span class="toggle-switch-inner"></span>
+              <span class="toggle-switch-switch"></span>
+            </label>
+          </div>
+          <span id="weapon-mode-desc" class="setting-desc">Başlangıçta silah verilir</span>
+        </div>
+
+        <div class="setting-item">
+          <label>Harita Seçimi</label>
+          <div class="map-selector-list">
+            <button class="map-option active" data-map-id="0">
+              <span class="map-name">Şehir Çatıları</span>
+              <span class="map-theme">Gece</span>
+            </button>
+            <button class="map-option" data-map-id="1">
+              <span class="map-name">Orman</span>
+              <span class="map-theme">Gündüz</span>
+            </button>
+            <button class="map-option" data-map-id="2">
+              <span class="map-name">Uzay İstasyonu</span>
+              <span class="map-theme">Karanlık Uzay</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="actions-group">
+          <button id="btn-ready" class="btn btn-primary" disabled>Hazır</button>
+          <button id="btn-leave-selection" class="btn btn-secondary">Odadan Ayrıl</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 4: Game Screen -->
+  <div id="screen-game" class="screen">
+    <!-- Top HUD Bar -->
+    <div id="game-hud" class="hud-bar">
+      <!-- Left side: Player 1 info -->
+      <div class="hud-player left-player">
+        <div class="player-hud-meta">
+          <span id="hud-name-self" class="hud-name">Oyuncu 1</span>
+          <div id="hud-lives-self" class="hud-lives">
+            <!-- 5 Heart icons -->
+          </div>
+        </div>
+        <div class="hud-hp-container">
+          <div id="hud-hp-bar-self" class="hud-hp-bar" style="width: 100%;"></div>
+          <span id="hud-hp-text-self" class="hud-hp-text">100 HP</span>
+        </div>
+        <div class="hud-weapon-status">
+          <span id="hud-ammo-self" class="hud-ammo">Mermi: 20/20</span>
+          <div id="hud-powerup-self" class="hud-powerup-badge hidden">
+            <span class="power-label">Hız</span>
+            <div class="power-progress-bar"><div id="power-bar-fill-self" class="power-progress-fill"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side: Player 2 info -->
+      <div class="hud-player right-player">
+        <div class="player-hud-meta">
+          <div id="hud-lives-opp" class="hud-lives">
+            <!-- 5 Heart icons -->
+          </div>
+          <span id="hud-name-opp" class="hud-name">Oyuncu 2</span>
+        </div>
+        <div class="hud-hp-container">
+          <div id="hud-hp-bar-opp" class="hud-hp-bar" style="width: 100%;"></div>
+          <span id="hud-hp-text-opp" class="hud-hp-text">100 HP</span>
+        </div>
+        <div class="hud-weapon-status">
+          <span id="hud-ammo-opp" class="hud-ammo">Mermi: 20/20</span>
+          <div id="hud-powerup-opp" class="hud-powerup-badge hidden">
+            <span class="power-label">Hız</span>
+            <div class="power-progress-bar"><div id="power-bar-fill-opp" class="power-progress-fill"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Countdown Overlay -->
+    <div id="countdown-overlay" class="countdown-overlay hidden">
+      <span id="countdown-number">3</span>
+    </div>
+
+    <!-- Gameplay Canvas -->
+    <canvas id="game-canvas" width="1024" height="576"></canvas>
+  </div>
+
+  <!-- Screen 5: End Screen -->
+  <div id="screen-end" class="screen">
+    <div class="card end-card glass">
+      <h1 class="end-title"><span id="winner-name-text">Kazanan</span> Kazandı!</h1>
+      
+      <div class="winner-presentation">
+        <!-- Loser Left Side -->
+        <div class="end-player loser-side">
+          <canvas id="loser-dance-canvas" width="120" height="150"></canvas>
+          <span id="loser-name-text" class="end-username text-muted">Kaybeden</span>
+          <span class="role-badge loser">Elendi</span>
+        </div>
+
+        <!-- Winner Center -->
+        <div class="end-player winner-side">
+          <canvas id="winner-dance-canvas" width="220" height="260"></canvas>
+          <span id="winner-name-large" class="end-username">Kazanan</span>
+          <span class="role-badge winner">KAZANAN!</span>
+        </div>
+      </div>
+
+      <div class="end-actions">
+        <button id="btn-play-again" class="btn btn-primary">Tekrar Oyna</button>
+        <button id="btn-exit-game" class="btn btn-secondary">Lobiye Dön</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Disconnect Overlay -->
+  <div id="disconnect-overlay" class="modal-overlay">
+    <div class="card glass status-card">
+      <div class="status-icon alert">!</div>
+      <h3>Rakip Bağlantısı Kesildi</h3>
+      <p>Rakip oyundan ayrıldı. 3 saniye içinde lobiye yönlendiriliyorsunuz...</p>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Game Scripts -->
+  <script src="game.js"></script>
+</body>
+</html>
