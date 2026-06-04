@@ -94,7 +94,7 @@ class GameController {
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const protocol = isLocal ? 'ws://' : 'wss://';
     const host = isLocal ? 'localhost:8080' : window.location.host; // fallback to host if production, user says wss:// plus window.location.hostname, but host retains port if any
-const wsUrl = `${protocol}${isLocal ? 'localhost:8080' : 'tarikto-production.up.railway.app'}`;
+    const wsUrl = `${protocol}${isLocal ? 'localhost:8080' : window.location.hostname}`;
 
     this.ws = new WebSocket(wsUrl);
 
@@ -172,6 +172,17 @@ const wsUrl = `${protocol}${isLocal ? 'localhost:8080' : 'tarikto-production.up.
         showScreen('screen-game');
         this.setupKeyboardListeners();
         this.startGameRenderLoop();
+
+        // Show BAŞLA! for 1 second, then hide the overlay
+        const overlay = document.getElementById('countdown-overlay');
+        const numEl = document.getElementById('countdown-number');
+        if (overlay && numEl) {
+          overlay.classList.remove('hidden');
+          numEl.innerText = 'BAŞLA!';
+          setTimeout(() => {
+            overlay.classList.add('hidden');
+          }, 1000);
+        }
         break;
 
       case 'game_state':
